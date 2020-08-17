@@ -48,7 +48,7 @@ public class UserController {
 
     //Get One User
     @GetMapping("/users/{id}")
-    User one(@PathVariable int id) {
+    User userById(@PathVariable int id) {
         User user = repository.findIdActive(id);
         return user ;
     }
