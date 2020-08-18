@@ -16,4 +16,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     @Query("SELECT u from User u where u.deletedAt IS NULL")
     List<User> getAll();
+
 }

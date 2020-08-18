@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -17,13 +16,11 @@ public class UserController {
         this.repository = repository;
     }
 
-
     //Get All Users
     @GetMapping("/users")
-    List<User> all() {
+    List<User> getAllUsers() {
         return repository.getAll();
     }
-
 
     //Create User
     @PostMapping("/users")
@@ -32,9 +29,9 @@ public class UserController {
         user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
         user.setStatus(0);
         repository.save(user);
+
         return user;
     }
-
 
     //Delete User
     @DeleteMapping("/users/{id}")
@@ -45,11 +42,11 @@ public class UserController {
         repository.save(user);
     }
 
-
     //Get One User
     @GetMapping("/users/{id}")
-    User userById(@PathVariable int id) {
+    User getUserById(@PathVariable int id) {
         User user = repository.findIdActive(id);
+
         return user ;
     }
 
@@ -61,9 +58,11 @@ public class UserController {
         user.setUserName(newUser.getUserName());
         user.setPhone(newUser.getPhone());
         user.setAddress(newUser.getAddress());
+        user.setPassword(newUser.getPassword());
         user.setEmail(newUser.getEmail());
         user.setStatus(newUser.getStatus());
         user.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
-        return repository.save(newUser);
+
+        return repository.save(user);
     }
 }
