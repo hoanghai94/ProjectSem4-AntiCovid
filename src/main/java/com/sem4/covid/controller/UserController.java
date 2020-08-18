@@ -20,6 +20,7 @@ public class UserController {
     //Get All Users
     @GetMapping("/users")
     List<User> all() {
+
         return repository.getAll();
     }
 
@@ -61,6 +62,7 @@ public class UserController {
         user.setUserName(newUser.getUserName());
         user.setPhone(newUser.getPhone());
         user.setAddress(newUser.getAddress());
+        user.setPassword(newUser.getPassword());
         user.setEmail(newUser.getEmail());
         user.setStatus(newUser.getStatus());
         user.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
