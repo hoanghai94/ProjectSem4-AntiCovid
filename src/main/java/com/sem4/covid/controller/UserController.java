@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -53,6 +52,7 @@ public class UserController {
         return user ;
     }
 
+
     //Update User
     @PutMapping("/users/{id}")
     User updateUser(@RequestBody User newUser, @PathVariable int id) {
@@ -64,6 +64,6 @@ public class UserController {
         user.setEmail(newUser.getEmail());
         user.setStatus(newUser.getStatus());
         user.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
-        return repository.save(newUser);
+        return repository.save(user);
     }
 }
