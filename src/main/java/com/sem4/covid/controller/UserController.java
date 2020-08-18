@@ -16,14 +16,11 @@ public class UserController {
         this.repository = repository;
     }
 
-
     //Get All Users
     @GetMapping("/users")
-    List<User> all() {
-
+    List<User> getAllUsers() {
         return repository.getAll();
     }
-
 
     //Create User
     @PostMapping("/users")
@@ -32,9 +29,9 @@ public class UserController {
         user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
         user.setStatus(0);
         repository.save(user);
+
         return user;
     }
-
 
     //Delete User
     @DeleteMapping("/users/{id}")
@@ -45,14 +42,13 @@ public class UserController {
         repository.save(user);
     }
 
-
     //Get One User
     @GetMapping("/users/{id}")
-    User userById(@PathVariable int id) {
+    User getUserById(@PathVariable int id) {
         User user = repository.findIdActive(id);
+
         return user ;
     }
-
 
     //Update User
     @PutMapping("/users/{id}")
@@ -66,6 +62,7 @@ public class UserController {
         user.setEmail(newUser.getEmail());
         user.setStatus(newUser.getStatus());
         user.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
+
         return repository.save(user);
     }
 }
