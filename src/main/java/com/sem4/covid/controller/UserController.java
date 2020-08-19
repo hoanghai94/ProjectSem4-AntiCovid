@@ -19,6 +19,7 @@ public class UserController {
     //Get All Users
     @GetMapping("/users")
     List<User> getAllUsers() {
+
         return repository.getAll();
     }
 
