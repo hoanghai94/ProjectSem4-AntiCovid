@@ -17,6 +17,7 @@ public class UserController {
     }
 
     //Get All Users
+    @CrossOrigin
     @GetMapping("/users")
     List<User> getAllUsers() {
 
@@ -24,6 +25,7 @@ public class UserController {
     }
 
     //Create User
+    @CrossOrigin
     @PostMapping("/users")
     User createUser(@RequestBody User user){
         Calendar cal = Calendar.getInstance();
@@ -35,23 +37,26 @@ public class UserController {
     }
 
     //Delete User
+    @CrossOrigin
     @DeleteMapping("/users/{id}")
     void deleteUser(@PathVariable int id) {
         Calendar cal = Calendar.getInstance();
-        User user = repository.findById(id).get();;
+        User user = repository.findById(id).get();
         user.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
         repository.save(user);
     }
 
-    //Get One User
+    //Get User By Id
+    @CrossOrigin
     @GetMapping("/users/{id}")
     User getUserById(@PathVariable int id) {
         User user = repository.findIdActive(id);
 
-        return user ;
+        return user;
     }
 
     //Update User
+    @CrossOrigin
     @PutMapping("/users/{id}")
     User updateUser(@RequestBody User newUser, @PathVariable int id) {
         Calendar cal = Calendar.getInstance();
