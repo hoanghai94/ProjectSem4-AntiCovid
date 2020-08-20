@@ -20,6 +20,7 @@ public class UserController {
     @CrossOrigin
     @GetMapping("/users")
     List<User> getAllUsers() {
+
         return repository.getAll();
     }
 
