@@ -17,13 +17,13 @@ public class UserController {
     }
 
     //Get All Users
-    @GetMapping("/users")
+    @GetMapping("/api/users")
     List<User> getAllUsers() {
-        return repository.getAll();
+        return repository.getAllUserActive();
     }
 
     //Create User
-    @PostMapping("/users")
+    @PostMapping("/api/user")
     User createUser(@RequestBody User user){
         Calendar cal = Calendar.getInstance();
         user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
@@ -33,17 +33,8 @@ public class UserController {
         return user;
     }
 
-    //Delete User
-    @DeleteMapping("/users/{id}")
-    void deleteUser(@PathVariable int id) {
-        Calendar cal = Calendar.getInstance();
-        User user = repository.findById(id).get();;
-        user.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
-        repository.save(user);
-    }
-
     //Get One User
-    @GetMapping("/users/{id}")
+    @GetMapping("/api/user/{id}")
     User getUserById(@PathVariable int id) {
         User user = repository.findIdActive(id);
 
@@ -51,7 +42,7 @@ public class UserController {
     }
 
     //Update User
-    @PutMapping("/users/{id}")
+    @PutMapping("/api/user/{id}")
     User updateUser(@RequestBody User newUser, @PathVariable int id) {
         Calendar cal = Calendar.getInstance();
         User user = repository.findIdActive(id);
@@ -64,5 +55,14 @@ public class UserController {
         user.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
 
         return repository.save(user);
+    }
+
+    //Delete User
+    @DeleteMapping("/api/user/{id}")
+    void deleteUser(@PathVariable int id) {
+        Calendar cal = Calendar.getInstance();
+        User user = repository.findById(id).get();;
+        user.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
+        repository.save(user);
     }
 }
