@@ -17,12 +17,14 @@ public class UserController {
     }
 
     //Get All Users
+    @CrossOrigin
     @GetMapping("/api/users")
     List<User> getAllUsers() {
         return repository.getAllUserActive();
     }
 
     //Create User
+    @CrossOrigin
     @PostMapping("/api/user")
     User createUser(@RequestBody User user){
         Calendar cal = Calendar.getInstance();
@@ -34,14 +36,16 @@ public class UserController {
     }
 
     //Get One User
+    @CrossOrigin
     @GetMapping("/api/user/{id}")
     User getUserById(@PathVariable int id) {
         User user = repository.findIdActive(id);
 
-        return user ;
+        return user;
     }
 
     //Update User
+    @CrossOrigin
     @PutMapping("/api/user/{id}")
     User updateUser(@RequestBody User newUser, @PathVariable int id) {
         Calendar cal = Calendar.getInstance();
@@ -58,6 +62,7 @@ public class UserController {
     }
 
     //Delete User
+    @CrossOrigin
     @DeleteMapping("/api/user/{id}")
     void deleteUser(@PathVariable int id) {
         Calendar cal = Calendar.getInstance();

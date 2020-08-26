@@ -30,6 +30,9 @@ public class Location {
     @Column(name = "updated_at")
     private java.sql.Timestamp updatedAt;
 
+    @Column(name = "deleted_at")
+    private java.sql.Timestamp deletedAt;
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -53,9 +56,6 @@ public class Location {
     public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
     }
-
-    @Column(name = "deleted_at")
-    private java.sql.Timestamp deletedAt;
 
     public Integer getId() {
         return id;
