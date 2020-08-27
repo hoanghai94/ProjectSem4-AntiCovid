@@ -17,12 +17,14 @@ public class PatientController {
     }
 
     //Get All Patients
+    @CrossOrigin
     @GetMapping("/api/patients")
     List<Patient> getAllPatients() {
         return repository.getAllPatientActive();
     }
 
     //Create Patient
+    @CrossOrigin
     @PostMapping("/api/patient")
     Patient createPatient(@RequestBody Patient patient){
         Calendar cal = Calendar.getInstance();
@@ -33,6 +35,7 @@ public class PatientController {
     }
 
     //Get One Patients
+    @CrossOrigin
     @GetMapping("/api/patient/{id}")
     Patient getUPatientById(@PathVariable int id) {
         Patient patient = repository.findIdActive(id);
@@ -41,6 +44,7 @@ public class PatientController {
     }
 
     //Update Patient
+    @CrossOrigin
     @PutMapping("/api/patient/{id}")
     Patient updatePatient(@RequestBody Patient newPatient, @PathVariable int id) {
         Calendar cal = Calendar.getInstance();
@@ -53,6 +57,7 @@ public class PatientController {
     }
 
     //Delete Patient
+    @CrossOrigin
     @DeleteMapping("/api/patient/{id}")
     void deletePatient(@PathVariable int id) {
         Calendar cal = Calendar.getInstance();

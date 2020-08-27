@@ -25,7 +25,7 @@ public class LocationController {
 
     //Create Location
     @CrossOrigin
-    @PostMapping("/locations")
+    @PostMapping("api//location")
     Location createLocation(@RequestBody Location location){
         Calendar cal = Calendar.getInstance();
         location.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
@@ -36,7 +36,7 @@ public class LocationController {
 
     //Delete Location
     @CrossOrigin
-    @DeleteMapping("/locations/{id}")
+    @DeleteMapping("api/location/{id}")
     void deleteLocation(@PathVariable int id) {
         Calendar cal = Calendar.getInstance();
         Location location = repository.findById(id);
@@ -46,7 +46,7 @@ public class LocationController {
 
     //Get Location By Id
     @CrossOrigin
-    @GetMapping("/locations/{id}")
+    @GetMapping("api/location/{id}")
     Location getLocationById(@PathVariable int id) {
         Location location = repository.findById(id);
 
@@ -55,7 +55,7 @@ public class LocationController {
 
     //Update Location
     @CrossOrigin
-    @PutMapping("/locations/{id}")
+    @PutMapping("api/location/{id}")
     Location updateLocation(@RequestBody Location newLocation, @PathVariable int id) {
         Calendar cal = Calendar.getInstance();
         Location location = repository.findById(id);
