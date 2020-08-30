@@ -25,7 +25,7 @@ public class LocationController {
 
     //Create Location
     @CrossOrigin
-    @PostMapping("api//location")
+    @PostMapping("api/location")
     Location createLocation(@RequestBody Location location){
         Calendar cal = Calendar.getInstance();
         location.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
