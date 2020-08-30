@@ -9,6 +9,9 @@ import java.sql.Timestamp;
 @Table(name = "location")
 public class Location {
 
+//    public Location() {
+//    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -19,10 +22,10 @@ public class Location {
     private String name;
 
     @Column(name = "lat")
-    private Double lat;
+    private float lat;
 
     @Column(name = "lng")
-    private Double lng;
+    private float lng;
 
     @Column(name = "created_at")
     private java.sql.Timestamp createdAt;
@@ -73,19 +76,19 @@ public class Location {
         this.name = name;
     }
 
-    public Double getLat() {
+    public float getLat() {
         return lat;
     }
 
-    public void setLat(Double lat) {
+    public void setLat(float lat) {
         this.lat = lat;
     }
 
-    public Double getLng() {
+    public float getLng() {
         return lng;
     }
 
-    public void setLng(Double lng) {
+    public void setLng(float lng) {
         this.lng = lng;
     }
 

@@ -4,10 +4,17 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "patient")
 public class Patient {
+
+//    private Set<Location> locations = new HashSet<Location>(0);
+
+//    public Patient() {
+//    }
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -26,6 +33,19 @@ public class Patient {
 
     @Column(name = "updated_at")
     private java.sql.Timestamp updatedAt;
+
+    @Column(name = "deleted_at")
+    private java.sql.Timestamp deletedAt;
+
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "patient_location", joinColumns = { @JoinColumn(name = "patient_id") }, inverseJoinColumns = { @JoinColumn(name = "location_id") })
+//    public Set<Location> getLocations() {
+//        return this.locations;
+//    }
+//
+//    public void setLocations(Set<Location> locations) {
+//        this.locations = locations;
+//    }
 
     public Timestamp getCreatedAt() {
         return createdAt;
@@ -50,9 +70,6 @@ public class Patient {
     public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
     }
-
-    @Column(name = "deleted_at")
-    private java.sql.Timestamp deletedAt;
 
     public Integer getId() {
         return id;

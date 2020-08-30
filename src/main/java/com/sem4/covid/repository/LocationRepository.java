@@ -16,4 +16,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     @Query("SELECT l from Location l where l.deletedAt IS NULL and l.id = :id")
     Location findById(@Param("id") int id);
+
+    @Query("SELECT l from Location l where l.name = :name")
+    Location findByName(@Param("name") String name);
 }
