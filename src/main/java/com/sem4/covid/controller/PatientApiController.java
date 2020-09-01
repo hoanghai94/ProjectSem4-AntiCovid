@@ -2,6 +2,7 @@ package com.sem4.covid.controller;
 
 import com.sem4.covid.entity.*;
 import com.sem4.covid.repository.LocationRepository;
+import com.sem4.covid.repository.PatientLocationRepository;
 import com.sem4.covid.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,13 @@ public class PatientApiController {
     @Autowired
     LocationRepository locationRepository;
 
+    @Autowired
+    PatientLocationRepository patientLocationRepository;
+
     final String ROOT_URI = "https://maps.vnpost.vn/apps/covid19/api/patientapi/List";
 
-    @Scheduled(fixedRate = 180000)
+    @Scheduled(cron = "0 0 22 * * ?", zone = "Asia/Ho_Chi_Minh")
     public List<PatientApi> getAllPatientApi() {
-        System.out.println("hello");
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI, PatientApiInfo.class);
         PatientApiInfo p = response.getBody();
@@ -41,17 +44,6 @@ public class PatientApiController {
                 String[] arrayName = names.split(",");
                 Calendar cal = Calendar.getInstance();
 
-                for (int i=0; i<arrayName.length; i++) {
-                    Patient patient = patientRepository.findByName(arrayName[i].trim());
-                    if(patient == null) {
-                        patient = new Patient();
-                        patient.setPatientName(arrayName[i].trim());
-                        patient.setNote(item.getNote());
-                        patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
-                        patientRepository.save(patient);
-                    }
-                }
-
                 Location location = locationRepository.findByName(item.getAddress());
                 if (location == null) {
                     location = new Location();
@@ -59,7 +51,23 @@ public class PatientApiController {
                     location.setLng(item.getLng());
                     location.setLat(item.getLat());
                     location.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
-                    locationRepository.save(location);
+                    location = locationRepository.save(location);
+                }
+
+                for (int i=0; i<arrayName.length; i++) {
+                    Patient patient = patientRepository.findByName(arrayName[i].trim());
+                    if(patient == null) {
+                        patient = new Patient();
+                        patient.setPatientName(arrayName[i].trim());
+                        patient.setNote(item.getNote());
+                        patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
+                        patient = patientRepository.save(patient);
+
+                        PatientLocation patientLocation = new PatientLocation();
+                        patientLocation.setLocationId(location.getId());
+                        patientLocation.setPatientId(patient.getId());
+                        patientLocationRepository.save(patientLocation);
+                    }
                 }
             }
             return listPatient;

@@ -9,9 +9,6 @@ import java.sql.Timestamp;
 @Table(name = "location")
 public class Location {
 
-//    public Location() {
-//    }
-
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
