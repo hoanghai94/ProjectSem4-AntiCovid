@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query("SELECT u from User u where u.deletedAt IS NULL")
     List<User> getAllUserActive();
 
+    @Query("SELECT u from User u where u.deletedAt IS NULL and u.email = :email and u.status=2")
+    User findAccountAdmin(@Param("email") String email);
 }
