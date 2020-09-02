@@ -66,6 +66,11 @@ public class PatientApiController {
                         PatientLocation patientLocation = new PatientLocation();
                         patientLocation.setLocationId(location.getId());
                         patientLocation.setPatientId(patient.getId());
+                        if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
+                            patientLocation.setVerifyDate(item.getVerifyDate());
+                        } else {
+                            patientLocation.setVerifyDate(null);
+                        }
                         patientLocationRepository.save(patientLocation);
                     }
                 }
