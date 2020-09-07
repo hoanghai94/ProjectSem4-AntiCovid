@@ -36,7 +36,7 @@ public class OAuthAppController {
         password = passwordEncoder.encode(password);
         if (user.getPassword().equals(password)) {
             session.setAttribute("Username", user.getUserName());
-            user.setToken();
+//            user.setToken();
 
 
             return "Success";
