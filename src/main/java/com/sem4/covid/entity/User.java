@@ -1,5 +1,6 @@
 package com.sem4.covid.entity;
 
+import javafx.css.StyleOrigin;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -32,6 +33,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "token")
+    private String token;
+
     @Column(name = "created_at")
     private java.sql.Timestamp createdAt;
 
@@ -40,6 +44,14 @@ public class User {
 
     @Column(name = "deleted_at")
     private java.sql.Timestamp deletedAt;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public Integer getId() {
         return id;

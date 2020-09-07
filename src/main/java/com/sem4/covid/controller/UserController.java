@@ -2,6 +2,7 @@ package com.sem4.covid.controller;
 
 import com.sem4.covid.entity.User;
 import com.sem4.covid.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -26,13 +27,39 @@ public class UserController {
     //Create User
     @CrossOrigin
     @PostMapping("/api/user")
-    User createUser(@RequestBody User user){
+    String createUser(@RequestBody User user){
         Calendar cal = Calendar.getInstance();
-        user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
-        user.setStatus(0);
-        repository.save(user);
+        if (user.getEmail() == null){
 
-        return user;
+            return "Email is null";
+        }
+        if (user.getPhone() == null){
+
+            return "Phone is null";
+        }
+        if (user.getPassword() == null){
+
+            return "Password is null";
+        }
+        if (repository.checkEmailUnique(user.getEmail()).size()>0){
+
+            return "Email is duplicated";
+        }
+        if (repository.checkPhoneUnique(user.getPhone()).size()>0){
+
+            return "Phone is duplicated";
+        }
+        if (repository.checkEmailUnique(user.getEmail()).isEmpty() & repository.checkPhoneUnique(user.getPhone()).isEmpty()){
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
+            user.setStatus(0);
+            repository.save(user);
+
+            return "Register success";
+        }
+
+        return null;
     }
 
     //Get One User
