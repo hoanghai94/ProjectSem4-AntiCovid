@@ -1,64 +1,65 @@
-package com.sem4.covid.entity;
+package com.sem4.covid.dto;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
-@Table(name = "patient")
-public class Patient {
-
-    @Id
-    @Column(name = "id")
+public class PatientDTO {
     private Integer id;
 
-    @Column(name = "patient_name")
     private String patientName;
 
-    @Column(name = "note")
     private String note;
 
-    @Column(name = "verify_date_patient")
     private java.sql.Timestamp verifyDatePatient;
 
-    @Column(name = "status")
+    private java.sql.Timestamp verifyDate;
+
     private String status;
 
-    @Column(name = "gender")
     private String gender;
 
-    @Column(name = "age")
     private String age;
 
-    @Column(name = "province")
     private String province;
 
-    @Column(name = "created_at")
     private java.sql.Timestamp createdAt;
 
-    @Column(name = "updated_at")
     private java.sql.Timestamp updatedAt;
 
-    @Column(name = "deleted_at")
     private java.sql.Timestamp deletedAt;
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
-    @JoinTable(name = "patient_location", joinColumns = { @JoinColumn(name = "patient_id") }, inverseJoinColumns = { @JoinColumn(name = "location_id") })
-    private Set<Location> location = new HashSet<>();
+    private List<LocationDTO> location = new ArrayList<LocationDTO>();
 
-    public Set<Location> getLocation() {
-        return this.location;
+    public List<LocationDTO> getLocation() {
+        return location;
     }
 
-    public void setLocation(Set<Location> location) {
+    public void setLocation(List<LocationDTO> location) {
         this.location = location;
     }
 
-    public Patient(){}
+    public Integer getId() {
+        return id;
+    }
 
-    public Patient(String patientName, String note) {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
         this.patientName = patientName;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
         this.note = note;
     }
 
@@ -84,30 +85,6 @@ public class Patient {
 
     public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getPatientName() {
-        return patientName;
-    }
-
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public Timestamp getVerifyDatePatient() {
@@ -148,5 +125,13 @@ public class Patient {
 
     public void setProvince(String province) {
         this.province = province;
+    }
+
+    public Timestamp getVerifyDate() {
+        return verifyDate;
+    }
+
+    public void setVerifyDate(Timestamp verifyDate) {
+        this.verifyDate = verifyDate;
     }
 }

@@ -12,8 +12,14 @@ import java.util.List;
 public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     @Query("SELECT l from Location l where l.deletedAt IS NULL")
-    List<Location> getAll();
+    List<Location> getAllLocation();
 
     @Query("SELECT l from Location l where l.deletedAt IS NULL and l.id = :id")
-    Location findById(@Param("id") int id);
+    Location findByIdActive(@Param("id") int id);
+
+    @Query("SELECT l from Location l where l.name = :name")
+    Location findByName(@Param("name") String name);
+
+    @Query("SELECT l from Location l JOIN PatientLocation pt on l.id = pt.locationId where l.deletedAt IS NULL and pt.patientId = :id")
+    List<Location> getLocationByPatientId(@Param("id") int id);
 }
