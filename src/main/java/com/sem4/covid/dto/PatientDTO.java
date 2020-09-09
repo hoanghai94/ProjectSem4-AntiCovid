@@ -13,6 +13,8 @@ public class PatientDTO {
 
     private java.sql.Timestamp verifyDatePatient;
 
+    private java.sql.Timestamp verifyDate;
+
     private String status;
 
     private String gender;
@@ -123,5 +125,13 @@ public class PatientDTO {
 
     public void setProvince(String province) {
         this.province = province;
+    }
+
+    public Timestamp getVerifyDate() {
+        return verifyDate;
+    }
+
+    public void setVerifyDate(Timestamp verifyDate) {
+        this.verifyDate = verifyDate;
     }
 }
