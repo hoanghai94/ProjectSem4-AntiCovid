@@ -16,39 +16,71 @@ public class AuthWebController {
         this.repository = repository;
     }
 
-    //Create Admin account
+    //Create admin account
     @CrossOrigin
-    @PostMapping("api/admin")
-    User createAdmin(@RequestBody User user){
+    @PostMapping("api/registeradmin")
+    String createAdmin(@RequestBody User user){
         Calendar cal = Calendar.getInstance();
-        user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
-        user.setStatus(2);
-        repository.save(user);
+        if (user.getEmail() == null){
 
-        return user;
+            return "Email is null";
+        }
+        if (user.getPhone() == null){
+
+            return "Phone is null";
+        }
+        if (user.getPassword() == null){
+
+            return "Password is null";
+        }
+        if (repository.checkEmailUnique(user.getEmail()).size()>0){
+
+            return "Email is duplicated";
+        }
+        if (repository.checkPhoneUnique(user.getPhone()).size()>0){
+
+            return "Phone is duplicated";
+        }
+        if (repository.checkEmailUnique(user.getEmail()).isEmpty() & repository.checkPhoneUnique(user.getPhone()).isEmpty()){
+            user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
+            user.setStatus(2);
+            repository.save(user);
+
+            return "Register success";
+        }
+
+        return "Fail";
     }
 
-    //Login by Admin account
+    //Login by admin account
     @CrossOrigin
-    @GetMapping("api/admin")
+    @PostMapping("api/admin")
     String loginAdmin(@RequestParam String email, @RequestParam String password, HttpSession session) {
+        if (email == null){
+
+            return "Email is null";
+        }
+        if (password == null){
+
+            return "Password is null";
+        }
         User user = repository.findAccountAdmin(email);
-        if (user.getPassword().equals(password)){
+        if (user == null){
+            return "User invalid";
+        }
+        if (user.getPassword().equals(password)) {
             session.setAttribute("Username", user.getUserName());
 
             return "Success";
-        }else {
-
-            return "Fail";
         }
+
+        return "Fail";
     }
 
     //Logout
     @CrossOrigin
-    @GetMapping("api/logout")
-    String logout(HttpSession session) {
+    @PostMapping("api/logout")
+    void logout(HttpSession session) {
         session.invalidate();
-
-        return null;
     }
 }
