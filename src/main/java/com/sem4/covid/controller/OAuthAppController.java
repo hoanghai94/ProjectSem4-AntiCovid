@@ -46,7 +46,7 @@ public class OAuthAppController {
                 }
 
                 token = sb.toString();
-                user.setToken(token);
+//                user.setToken(token);
 
                 return token;
             }
