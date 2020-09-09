@@ -2,7 +2,6 @@ package com.sem4.covid.controller;
 
 import com.sem4.covid.entity.User;
 import com.sem4.covid.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -50,8 +49,6 @@ public class UserController {
             return "Phone is duplicated";
         }
         if (repository.checkEmailUnique(user.getEmail()).isEmpty() & repository.checkPhoneUnique(user.getPhone()).isEmpty()){
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
             user.setStatus(0);
             repository.save(user);

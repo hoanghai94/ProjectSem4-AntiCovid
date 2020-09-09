@@ -18,7 +18,7 @@ public class AuthWebController {
 
     //Create admin account
     @CrossOrigin
-    @PostMapping("api/admin")
+    @PostMapping("api/registeradmin")
     String createAdmin(@RequestBody User user){
         Calendar cal = Calendar.getInstance();
         if (user.getEmail() == null){
@@ -49,12 +49,12 @@ public class AuthWebController {
             return "Register success";
         }
 
-        return null;
+        return "Fail";
     }
 
     //Login by admin account
     @CrossOrigin
-    @GetMapping("api/admin")
+    @PostMapping("api/admin")
     String loginAdmin(@RequestParam String email, @RequestParam String password, HttpSession session) {
         if (email == null){
 
@@ -79,7 +79,7 @@ public class AuthWebController {
 
     //Logout
     @CrossOrigin
-    @GetMapping("api/logout")
+    @PostMapping("api/logout")
     void logout(HttpSession session) {
         session.invalidate();
     }

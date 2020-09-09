@@ -2,10 +2,11 @@ package com.sem4.covid.controller;
 
 import com.sem4.covid.entity.User;
 import com.sem4.covid.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 public class OAuthAppController {
@@ -18,36 +19,50 @@ public class OAuthAppController {
 
     //Login by member account
     @CrossOrigin
-    @GetMapping("api/member")
-    String loginMember(@RequestParam String email, @RequestParam String password, HttpSession session) {
-        if (email == null){
+    @PostMapping("api/member")
+    String loginMember(@RequestHeader(name = "accessToken") String token,@RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
+        if (token == null){
+            if (email == null){
 
-            return "Email is null";
+                return "Email is null";
+            }
+            if (password == null){
+
+                return "Password is null";
+            }
+            User user = repository.findAccountAdmin(email);
+            if (user == null){
+                return "User invalid";
+            }
+            if (user.getPassword().equals(password)) {
+                session.setAttribute("Username", user.getUserName());
+                String salt = java.time.LocalDateTime.now().toString();
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(salt.getBytes());
+                byte[] digest = md.digest();
+                StringBuffer sb = new StringBuffer();
+                for (byte b : digest) {
+                    sb.append(String.format("%02x", b & 0xff));
+                }
+
+                token = sb.toString();
+                user.setToken(token);
+
+                return token;
+            }
         }
-        if (password == null){
+        else if (repository.checkToken(token) != null){
+            session.setAttribute("Username", repository.checkToken(token).getUserName());
 
-            return "Password is null";
-        }
-        User user = repository.findAccountAdmin(email);
-        if (user == null){
-            return "User invalid";
-        }
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        password = passwordEncoder.encode(password);
-        if (user.getPassword().equals(password)) {
-            session.setAttribute("Username", user.getUserName());
-//            user.setToken();
-
-
-            return "Success";
+            return "Login Success";
         }
 
-        return "Fail";
+        return "Login Fail";
     }
 
     //Logout
     @CrossOrigin
-    @GetMapping("api/logout")
+    @PostMapping("api/memberlogout")
     void logout(HttpSession session) {
         session.invalidate();
     }

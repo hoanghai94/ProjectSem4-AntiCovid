@@ -28,4 +28,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     @Query("SELECT u from User u where u.deletedAt IS NULL and u.phone = :phone")
     List<User> checkPhoneUnique(@Param("phone") String phone);
+
+    @Query("SELECT u from User u where u.deletedAt IS NULL and u.token = :token")
+    User checkToken(@Param("token") String token);
 }
