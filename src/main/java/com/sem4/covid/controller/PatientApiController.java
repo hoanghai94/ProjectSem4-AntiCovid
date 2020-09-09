@@ -29,7 +29,7 @@ public class PatientApiController {
 
     final String ROOT_URI = "https://maps.vnpost.vn/apps/covid19/api/patientapi/List";
 
-    @Scheduled(cron = "0 0 22 * * ?", zone = "Asia/Ho_Chi_Minh")
+    @Scheduled(cron = "0 30 11 * * ?", zone = "Asia/Ho_Chi_Minh")
     public List<PatientApi> getAllPatientApi() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI, PatientApiInfo.class);
@@ -57,7 +57,10 @@ public class PatientApiController {
                 for (int i=0; i<arrayName.length; i++) {
                     Patient patient = patientRepository.findByName(arrayName[i].trim());
                     if(patient == null) {
+                        String[] patientName = arrayName[i].split("-");
+                        int patientId = Integer.parseInt(patientName[1].trim());
                         patient = new Patient();
+                        patient.setId(patientId);
                         patient.setPatientName(arrayName[i].trim());
                         patient.setNote(item.getNote());
                         patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
@@ -72,6 +75,19 @@ public class PatientApiController {
                             patientLocation.setVerifyDate(null);
                         }
                         patientLocationRepository.save(patientLocation);
+                    } else if (location != null){
+                        PatientLocation patientLocation = patientLocationRepository.findByPatientLocationId(patient.getId(), location.getId());
+                        if (patientLocation == null) {
+                            PatientLocation newPatientLocation = new PatientLocation();
+                            newPatientLocation.setPatientId(patient.getId());
+                            newPatientLocation.setLocationId(location.getId());
+                            if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
+                                newPatientLocation.setVerifyDate(item.getVerifyDate());
+                            } else {
+                                newPatientLocation.setVerifyDate(null);
+                            }
+                            patientLocationRepository.save(newPatientLocation);
+                        }
                     }
                 }
             }
