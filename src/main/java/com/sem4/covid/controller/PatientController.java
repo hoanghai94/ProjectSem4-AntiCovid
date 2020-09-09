@@ -85,7 +85,7 @@ public class PatientController {
     //Get One Patient
     @CrossOrigin
     @GetMapping("/api/patient/{id}")
-    ResponseEntity<?> getUPatientById(@PathVariable int id) {
+    ResponseEntity<?> getPatientById(@PathVariable int id) {
         try {
             Patient patient = repository.findIdActive(id);
             if (patient == null) {
