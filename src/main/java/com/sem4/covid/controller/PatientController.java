@@ -85,10 +85,31 @@ public class PatientController {
     //Get One Patient
     @CrossOrigin
     @GetMapping("/api/patient/{id}")
-    Patient getUPatientById(@PathVariable int id) {
-        Patient patient = repository.findIdActive(id);
+    ResponseEntity<?> getPatientById(@PathVariable int id) {
+        try {
+            Patient patient = repository.findIdActive(id);
+            if (patient == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                PatientDTO patientDTO = new PatientDTO();
+                patientDTO.setId(patient.getId());
+                patientDTO.setPatientName(patient.getPatientName());
+                patientDTO.setGender(patient.getGender());
+                patientDTO.setAge(patient.getAge());
+                patientDTO.setStatus(patient.getStatus());
+                patientDTO.setNote(patient.getNote());
+                patientDTO.setProvince(patient.getProvince());
+                patientDTO.setVerifyDatePatient(patient.getVerifyDatePatient());
+                patientDTO.setCreatedAt(patient.getCreatedAt());
+                patientDTO.setUpdatedAt(patient.getUpdatedAt());
+                patientDTO.setDeletedAt(patient.getDeletedAt());
 
-        return patient;
+                return new ResponseEntity(patientDTO, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //Create Patient

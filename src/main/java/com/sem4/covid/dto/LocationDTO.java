@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationDTO {
-
     private Integer id;
 
     private String name;
