@@ -23,6 +23,9 @@ public class PatientLocation {
     @Column(name = "verify_date")
     private java.sql.Timestamp verifyDate;
 
+    @Column(name = "note")
+    private String note;
+
     public Integer getId() {
         return id;
     }
@@ -55,4 +58,11 @@ public class PatientLocation {
         this.verifyDate = verifyDate;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 }

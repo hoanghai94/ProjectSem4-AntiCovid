@@ -1,5 +1,6 @@
 package com.sem4.covid.repository;
 
+import com.sem4.covid.entity.Location;
 import com.sem4.covid.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +20,8 @@ public interface PatientRepository extends JpaRepository<Patient,Integer> {
 
     @Query("SELECT p from Patient p where p.deletedAt IS NULL")
     List<Patient> getAllPatientActive();
+
+    @Query("SELECT p from Location p JOIN PatientLocation pt on p.id = pt.patientId where p.deletedAt IS NULL and pt.locationId = :id")
+    List<Patient> getPatientByLocationId(@Param("id") int id);
 
 }
