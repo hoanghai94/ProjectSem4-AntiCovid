@@ -67,7 +67,7 @@ public class PatientController {
                     p.setGender(patient.getGender());
                     p.setStatus(patient.getStatus());
                     p.setProvince(patient.getProvince());
-//                    p.setVerifyDatePatient(patient.getVerifyDatePatient());
+                    p.setVerifyDate(patient.getVerifyDatePatient());
                     p.setCreatedAt(patient.getCreatedAt());
                     p.setUpdatedAt(patient.getUpdatedAt());
                     p.setDeletedAt(patient.getDeletedAt());
@@ -165,6 +165,19 @@ public class PatientController {
             repository.save(patient);
 
             return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Get All Table Patient_Location
+    @CrossOrigin
+    @GetMapping("/api/patient-location")
+    ResponseEntity<?> getAllPatientLocation() {
+        try {
+            List<PatientLocation> listPatientLocation = patientLocationRepository.getAllPatientLocation();
+            return new ResponseEntity(listPatientLocation, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
