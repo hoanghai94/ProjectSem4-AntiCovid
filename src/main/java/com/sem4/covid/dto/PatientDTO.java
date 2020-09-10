@@ -9,7 +9,7 @@ public class PatientDTO {
 
     private String patientName;
 
-    private String note;
+    private String notePatient;
 
     private java.sql.Timestamp verifyDatePatient;
 
@@ -55,12 +55,12 @@ public class PatientDTO {
         this.patientName = patientName;
     }
 
-    public String getNote() {
-        return note;
+    public String getNotePatient() {
+        return notePatient;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setNotePatient(String notePatient) {
+        this.notePatient = notePatient;
     }
 
     public Timestamp getCreatedAt() {

@@ -16,8 +16,8 @@ public class Patient {
     @Column(name = "patient_name")
     private String patientName;
 
-    @Column(name = "note")
-    private String note;
+    @Column(name = "note_patient")
+    private String notePatient;
 
     @Column(name = "verify_date_patient")
     private java.sql.Timestamp verifyDatePatient;
@@ -56,11 +56,6 @@ public class Patient {
     }
 
     public Patient(){}
-
-    public Patient(String patientName, String note) {
-        this.patientName = patientName;
-        this.note = note;
-    }
 
     public Timestamp getCreatedAt() {
         return createdAt;
@@ -102,12 +97,12 @@ public class Patient {
         this.patientName = patientName;
     }
 
-    public String getNote() {
-        return note;
+    public String getNotePatient() {
+        return notePatient;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setNotePatient(String notePatient) {
+        this.notePatient = notePatient;
     }
 
     public Timestamp getVerifyDatePatient() {

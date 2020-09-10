@@ -15,6 +15,8 @@ public class LocationDTO {
 
     private String province;
 
+    private java.sql.Timestamp verifyDatePatient;
+
     private java.sql.Timestamp verifyDate;
 
     private java.sql.Timestamp createdAt;
@@ -103,5 +105,13 @@ public class LocationDTO {
 
     public void setVerifyDate(Timestamp verifyDate) {
         this.verifyDate = verifyDate;
+    }
+
+    public Timestamp getVerifyDatePatient() {
+        return verifyDatePatient;
+    }
+
+    public void setVerifyDatePatient(Timestamp verifyDatePatient) {
+        this.verifyDatePatient = verifyDatePatient;
     }
 }
