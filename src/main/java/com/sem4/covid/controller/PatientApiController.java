@@ -6,13 +6,16 @@ import com.sem4.covid.repository.PatientLocationRepository;
 import com.sem4.covid.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -31,7 +34,10 @@ public class PatientApiController {
 
     final String ROOT_URI_NEW = "http://anticovidaptech.herokuapp.com/patients";
 
-    @Scheduled(cron = "0 50 14 * * ?", zone = "Asia/Ho_Chi_Minh")
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    String currentDate = dateFormat.format(new Date());
+    final String ROOT_URI_DATE = "http://anticovidaptech.herokuapp.com/patients?date=" + currentDate;
+
     public List<PatientApi> getAllPatientApi() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI, PatientApiInfo.class);
@@ -98,48 +104,49 @@ public class PatientApiController {
         }
         return null;
     }
-//
+
+    @Scheduled(cron = "0 20 15 * * ?", zone = "Asia/Ho_Chi_Minh")
 //    @Scheduled(fixedRate = 180000)
-//    public List<PatientApi> getNewPatientApi() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI_NEW, PatientApiInfo.class);
-//        PatientApiInfo p = response.getBody();
-//
-//        assert p != null;
-//        if (p.getCode().equals("SUCCESS")) {
-//            List<PatientApi> listPatient = Arrays.asList(p.getData());
-//
-//            for (PatientApi item : listPatient) {
-//                Calendar cal = Calendar.getInstance();
-//
-//                Patient patient = patientRepository.findByName(item.getPatientName());
-//                if(patient == null) {
-//                    patient = new Patient();
-//                    patient.setId(item.getId());
-//                    patient.setPatientName(item.getPatientName());
-//                    patient.setGender(item.getGender());
-//                    patient.setAge(item.getAge());
-//                    patient.setStatus(item.getStatus());
-//                    patient.setProvince(item.getProvince());
-//                    patient.setNotePatient(item.getNote());
-//                    patient.setVerifyDatePatient(item.getVerifyDate());
-//                    patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
-//                    patientRepository.save(patient);
-//                } else {
-//                    patient.setId(item.getId());
-//                    patient.setPatientName(item.getPatientName());
-//                    patient.setGender(item.getGender());
-//                    patient.setAge(item.getAge());
-//                    patient.setStatus(item.getStatus());
-//                    patient.setProvince(item.getProvince());
-//                    patient.setNotePatient(item.getNote());
-//                    patient.setVerifyDatePatient(item.getVerifyDate());
-//                    patient.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
-//                    patientRepository.save(patient);
-//                }
-//            }
-//            return listPatient;
-//        }
-//        return null;
-//    }
+    public List<PatientApi> getNewPatientApi() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI_NEW, PatientApiInfo.class);
+        PatientApiInfo p = response.getBody();
+
+        assert p != null;
+        if (p.getCode().equals("SUCCESS")) {
+            List<PatientApi> listPatient = Arrays.asList(p.getData());
+
+            for (PatientApi item : listPatient) {
+                Calendar cal = Calendar.getInstance();
+
+                Patient patient = patientRepository.findByName(item.getPatientName());
+                if(patient == null) {
+                    patient = new Patient();
+                    patient.setId(item.getId());
+                    patient.setPatientName(item.getPatientName());
+                    patient.setGender(item.getGender());
+                    patient.setAge(item.getAge());
+                    patient.setStatus(item.getStatus());
+                    patient.setProvince(item.getProvince());
+                    patient.setNotePatient(item.getNote());
+                    patient.setVerifyDatePatient(item.getVerifyDate());
+                    patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
+                    patientRepository.save(patient);
+                } else {
+                    patient.setId(item.getId());
+                    patient.setPatientName(item.getPatientName());
+                    patient.setGender(item.getGender());
+                    patient.setAge(item.getAge());
+                    patient.setStatus(item.getStatus());
+                    patient.setProvince(item.getProvince());
+                    patient.setNotePatient(item.getNote());
+                    patient.setVerifyDatePatient(item.getVerifyDate());
+                    patient.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
+                    patientRepository.save(patient);
+                }
+            }
+            return listPatient;
+        }
+        return null;
+    }
 }
