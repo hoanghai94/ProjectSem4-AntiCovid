@@ -12,7 +12,7 @@ import java.util.List;
 public interface PatientLocationRepository extends JpaRepository<PatientLocation, Integer> {
 
     @Query("SELECT p from PatientLocation p")
-    List<PatientLocation> getAll();
+    List<PatientLocation> getAllPatientLocation();
 
     @Query("SELECT p from PatientLocation p where p.patientId = :patientId and p.locationId = :locationId")
     PatientLocation findByPatientLocationId(@Param("patientId") Integer patientId, @Param("locationId") Integer locationId);
