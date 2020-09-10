@@ -29,7 +29,9 @@ public class PatientApiController {
 
     final String ROOT_URI = "https://maps.vnpost.vn/apps/covid19/api/patientapi/List";
 
-    @Scheduled(cron = "0 30 11 * * ?", zone = "Asia/Ho_Chi_Minh")
+    final String ROOT_URI_NEW = "http://anticovidaptech.herokuapp.com/patients";
+
+    @Scheduled(cron = "0 50 14 * * ?", zone = "Asia/Ho_Chi_Minh")
     public List<PatientApi> getAllPatientApi() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI, PatientApiInfo.class);
@@ -62,25 +64,26 @@ public class PatientApiController {
                         patient = new Patient();
                         patient.setId(patientId);
                         patient.setPatientName(arrayName[i].trim());
-                        patient.setNote(item.getNote());
                         patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
                         patient = patientRepository.save(patient);
 
                         PatientLocation patientLocation = new PatientLocation();
                         patientLocation.setLocationId(location.getId());
                         patientLocation.setPatientId(patient.getId());
+                        patientLocation.setNote(item.getNote());
                         if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
                             patientLocation.setVerifyDate(item.getVerifyDate());
                         } else {
                             patientLocation.setVerifyDate(null);
                         }
                         patientLocationRepository.save(patientLocation);
-                    } else if (location != null){
+                    } else {
                         PatientLocation patientLocation = patientLocationRepository.findByPatientLocationId(patient.getId(), location.getId());
                         if (patientLocation == null) {
                             PatientLocation newPatientLocation = new PatientLocation();
                             newPatientLocation.setPatientId(patient.getId());
                             newPatientLocation.setLocationId(location.getId());
+                            newPatientLocation.setNote(item.getNote());
                             if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
                                 newPatientLocation.setVerifyDate(item.getVerifyDate());
                             } else {
@@ -95,4 +98,48 @@ public class PatientApiController {
         }
         return null;
     }
+//
+//    @Scheduled(fixedRate = 180000)
+//    public List<PatientApi> getNewPatientApi() {
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI_NEW, PatientApiInfo.class);
+//        PatientApiInfo p = response.getBody();
+//
+//        assert p != null;
+//        if (p.getCode().equals("SUCCESS")) {
+//            List<PatientApi> listPatient = Arrays.asList(p.getData());
+//
+//            for (PatientApi item : listPatient) {
+//                Calendar cal = Calendar.getInstance();
+//
+//                Patient patient = patientRepository.findByName(item.getPatientName());
+//                if(patient == null) {
+//                    patient = new Patient();
+//                    patient.setId(item.getId());
+//                    patient.setPatientName(item.getPatientName());
+//                    patient.setGender(item.getGender());
+//                    patient.setAge(item.getAge());
+//                    patient.setStatus(item.getStatus());
+//                    patient.setProvince(item.getProvince());
+//                    patient.setNotePatient(item.getNote());
+//                    patient.setVerifyDatePatient(item.getVerifyDate());
+//                    patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
+//                    patientRepository.save(patient);
+//                } else {
+//                    patient.setId(item.getId());
+//                    patient.setPatientName(item.getPatientName());
+//                    patient.setGender(item.getGender());
+//                    patient.setAge(item.getAge());
+//                    patient.setStatus(item.getStatus());
+//                    patient.setProvince(item.getProvince());
+//                    patient.setNotePatient(item.getNote());
+//                    patient.setVerifyDatePatient(item.getVerifyDate());
+//                    patient.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
+//                    patientRepository.save(patient);
+//                }
+//            }
+//            return listPatient;
+//        }
+//        return null;
+//    }
 }
