@@ -37,7 +37,7 @@ public class PatientApiController {
     String currentDate = dateFormat.format(new Date());
     final String ROOT_URI_DATE = "http://anticovidaptech.herokuapp.com/patients?date=" + currentDate;
 
-    @Scheduled(cron = "0 15 20 * * ?", zone = "Asia/Ho_Chi_Minh")
+    @Scheduled(cron = "0 20 20 * * ?", zone = "Asia/Ho_Chi_Minh")
     public List<PatientApi> getAllPatientApi() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI, PatientApiInfo.class);
