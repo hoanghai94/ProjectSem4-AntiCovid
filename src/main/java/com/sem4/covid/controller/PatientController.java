@@ -52,6 +52,7 @@ public class PatientController {
                         l.setLng(location.getLng());
                         l.setProvince(location.getProvince());
                         l.setVerifyDate(patientLocation.getVerifyDate());
+                        l.setVerifyDatePatient(patient.getVerifyDatePatient());
                         l.setCreatedAt(location.getCreatedAt());
                         l.setUpdatedAt(location.getUpdatedAt());
                         l.setDeletedAt(location.getDeletedAt());
@@ -61,12 +62,12 @@ public class PatientController {
 
                     p.setId(patient.getId());
                     p.setPatientName(patient.getPatientName());
-                    p.setNote(patient.getNote());
+                    p.setNotePatient(patient.getNotePatient());
                     p.setAge(patient.getAge());
                     p.setGender(patient.getGender());
                     p.setStatus(patient.getStatus());
                     p.setProvince(patient.getProvince());
-                    p.setVerifyDatePatient(patient.getVerifyDatePatient());
+                    p.setVerifyDate(patient.getVerifyDatePatient());
                     p.setCreatedAt(patient.getCreatedAt());
                     p.setUpdatedAt(patient.getUpdatedAt());
                     p.setDeletedAt(patient.getDeletedAt());
@@ -97,7 +98,7 @@ public class PatientController {
                 patientDTO.setGender(patient.getGender());
                 patientDTO.setAge(patient.getAge());
                 patientDTO.setStatus(patient.getStatus());
-                patientDTO.setNote(patient.getNote());
+                patientDTO.setNotePatient(patient.getNotePatient());
                 patientDTO.setProvince(patient.getProvince());
                 patientDTO.setVerifyDatePatient(patient.getVerifyDatePatient());
                 patientDTO.setCreatedAt(patient.getCreatedAt());
@@ -137,7 +138,7 @@ public class PatientController {
 
             Patient patient = repository.findIdActive(id);
             patient.setPatientName(newPatient.getPatientName());
-            patient.setNote(newPatient.getNote());
+            patient.setNotePatient(newPatient.getNotePatient());
             patient.setVerifyDatePatient(newPatient.getVerifyDatePatient());
             patient.setGender(newPatient.getGender());
             patient.setAge(newPatient.getAge());
@@ -164,6 +165,19 @@ public class PatientController {
             repository.save(patient);
 
             return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Get All Table Patient_Location
+    @CrossOrigin
+    @GetMapping("/api/patient-location")
+    ResponseEntity<?> getAllPatientLocation() {
+        try {
+            List<PatientLocation> listPatientLocation = patientLocationRepository.getAllPatientLocation();
+            return new ResponseEntity(listPatientLocation, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

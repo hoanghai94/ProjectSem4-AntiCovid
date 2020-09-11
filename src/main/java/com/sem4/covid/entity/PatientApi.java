@@ -4,6 +4,18 @@ import java.sql.Timestamp;
 
 public class PatientApi {
 
+    private Integer id;
+
+    private String patientName;
+
+    private String gender;
+
+    private String age;
+
+    private String status;
+
+    private String province;
+
     private String name;
 
     private String address;
@@ -72,5 +84,53 @@ public class PatientApi {
 
     public void setVerifyDate(Timestamp verifyDate) {
         this.verifyDate = verifyDate;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
     }
 }
