@@ -41,25 +41,28 @@ public class LocationController {
             } else {
                 List<LocationDTO> list = listLocation.stream().map(location ->{
                     LocationDTO l = new LocationDTO();
-
                     List<Patient> patients = patientRepository.getPatientByLocationId(location.getId());
+
                     List<PatientDTO> patientDTO = patients.stream().map(patient -> {
                         PatientLocation patientLocation = patientLocationRepository.findByPatientLocationId(patient.getId(), location.getId());
+                        if (patientLocation != null) {
+                            PatientDTO p = new PatientDTO();
+                            p.setId(patient.getId());
+                            p.setPatientName(patient.getPatientName());
+                            p.setGender(patient.getGender());
+                            p.setAge(patient.getAge());
+                            p.setStatus(patient.getStatus());
+                            p.setVerifyDatePatient(patient.getVerifyDatePatient());
+                            p.setVerifyDate(patientLocation.getVerifyDate());
+                            p.setProvince(patient.getProvince());
+                            p.setCreatedAt(patient.getCreatedAt());
+                            p.setUpdatedAt(patient.getUpdatedAt());
+                            p.setDeletedAt(patient.getDeletedAt());
 
-                        PatientDTO p = new PatientDTO();
-                        p.setId(patient.getId());
-                        p.setPatientName(patient.getPatientName());
-                        p.setGender(patient.getGender());
-                        p.setAge(patient.getAge());
-                        p.setStatus(patient.getStatus());
-                        p.setVerifyDatePatient(patient.getVerifyDatePatient());
-                        p.setVerifyDate(patientLocation.getVerifyDate());
-                        p.setProvince(patient.getProvince());
-                        p.setCreatedAt(patient.getCreatedAt());
-                        p.setUpdatedAt(patient.getUpdatedAt());
-                        p.setDeletedAt(patient.getDeletedAt());
-
-                        return p;
+                            return p;
+                        } else {
+                            return null;
+                        }
                     }).collect(Collectors.toList());
 
                     l.setId(location.getId());
@@ -152,10 +155,13 @@ public class LocationController {
     ResponseEntity<?> deleteLocation(@PathVariable int id) {
         try {
             Calendar cal = Calendar.getInstance();
-            Location location = repository.findByIdActive(id);
-            location.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
-            repository.save(location);
-
+            List<PatientLocation> patientLocations = patientLocationRepository.findByLocationId(id);
+            if (!patientLocations.isEmpty()) {
+                for (PatientLocation item : patientLocations) {
+                    item.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
+                    patientLocationRepository.save(item);
+                }
+            }
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
