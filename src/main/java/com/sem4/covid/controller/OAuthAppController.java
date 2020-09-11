@@ -2,6 +2,8 @@ package com.sem4.covid.controller;
 
 import com.sem4.covid.entity.User;
 import com.sem4.covid.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -19,20 +21,23 @@ public class OAuthAppController {
 
     //Login by member account
     @CrossOrigin
-    @PostMapping("api/member")
-    String loginMember(@RequestHeader(name = "accessToken") String token,@RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
-        if (token == null){
-            if (email == null){
+    @PostMapping("api/loginapp")
+    ResponseEntity<?> loginMember(@RequestHeader(name = "accessToken",required = true) String token, @RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
+        if (token.isEmpty() || repository.checkToken(token) == null){
+            if (email == null || email.isEmpty()){
 
-                return "Email is null";
+                return new ResponseEntity<String>(
+                        String.format("Email không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
-            if (password == null){
+            if (password == null || password.isEmpty()){
 
-                return "Password is null";
+                return new ResponseEntity<String>(
+                        String.format("Mật khẩu không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
-            User user = repository.findAccountAdmin(email);
-            if (user == null){
-                return "User invalid";
+            User user = repository.findAccountMember(email);
+            if (user == null || !user.getPassword().equals(password)){
+                return new ResponseEntity<String>(
+                        String.format("Email hoặc mật khẩu không đúng."), HttpStatus.NOT_FOUND);
             }
             if (user.getPassword().equals(password)) {
                 session.setAttribute("Username", user.getUserName());
@@ -46,25 +51,21 @@ public class OAuthAppController {
                 }
 
                 token = sb.toString();
-//                user.setToken(token);
+                user.setToken(token);
+                repository.save(user);
 
-                return token;
+                return new ResponseEntity<User>(
+                        user, HttpStatus.OK);
             }
         }
-        else if (repository.checkToken(token) != null){
+        if (repository.checkToken(token) != null){
             session.setAttribute("Username", repository.checkToken(token).getUserName());
 
-            return "Login Success";
+            return new ResponseEntity<User>(
+                    repository.checkToken(token),HttpStatus.OK);
         }
 
-        return "Login Fail";
-    }
-
-    //Logout
-    @CrossOrigin
-    @PostMapping("api/memberlogout")
-    void logout(HttpSession session) {
-        session.invalidate();
+        return null;
     }
 
 }
