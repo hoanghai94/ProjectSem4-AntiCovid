@@ -2,6 +2,8 @@ package com.sem4.covid.controller;
 
 import com.sem4.covid.entity.User;
 import com.sem4.covid.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -26,34 +28,40 @@ public class UserController {
     //Create User
     @CrossOrigin
     @PostMapping("/api/user")
-    String createUser(@RequestBody User user){
+    ResponseEntity<?> createUser(@RequestBody User user){
         Calendar cal = Calendar.getInstance();
-        if (user.getEmail() == null){
+        if (user.getEmail() == null || user.getEmail().isEmpty()){
 
-            return "Email is null";
+            return new ResponseEntity<String>(
+                    String.format("Email không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        if (user.getPhone() == null){
+        if (user.getPhone() == null || user.getPhone().isEmpty()){
 
-            return "Phone is null";
+            return new ResponseEntity<String>(
+                    String.format("Số điện thoại không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        if (user.getPassword() == null){
+        if (user.getPassword() == null || user.getPassword().isEmpty()){
 
-            return "Password is null";
+            return new ResponseEntity<String>(
+                    String.format("Mật khẩu không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        if (repository.checkEmailUnique(user.getEmail()).size()>0){
+        if (repository.checkEmailUnique(user.getEmail()).size() > 0){
 
-            return "Email is duplicated";
+            return new ResponseEntity<String>(
+                    String.format("Email đã tồn tại."), HttpStatus.BAD_REQUEST);
         }
-        if (repository.checkPhoneUnique(user.getPhone()).size()>0){
+        if (repository.checkPhoneUnique(user.getPhone()).size() > 0){
 
-            return "Phone is duplicated";
+            return new ResponseEntity<String>(
+                    String.format("Số điện thoại đã tồn tại."), HttpStatus.BAD_REQUEST);
         }
         if (repository.checkEmailUnique(user.getEmail()).isEmpty() & repository.checkPhoneUnique(user.getPhone()).isEmpty()){
             user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
             user.setStatus(0);
             repository.save(user);
 
-            return "Register success";
+            return new ResponseEntity<User>(
+                    user, HttpStatus.OK);
         }
 
         return null;
