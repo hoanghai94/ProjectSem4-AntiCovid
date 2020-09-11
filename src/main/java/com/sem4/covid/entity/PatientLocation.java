@@ -3,6 +3,7 @@ package com.sem4.covid.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "patient_location")
@@ -25,6 +26,15 @@ public class PatientLocation {
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "created_at")
+    private java.sql.Timestamp createdAt;
+
+    @Column(name = "updated_at")
+    private java.sql.Timestamp updatedAt;
+
+    @Column(name = "deleted_at")
+    private java.sql.Timestamp deletedAt;
 
     public Integer getId() {
         return id;
@@ -64,5 +74,29 @@ public class PatientLocation {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

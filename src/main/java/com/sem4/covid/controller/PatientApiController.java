@@ -37,6 +37,7 @@ public class PatientApiController {
     String currentDate = dateFormat.format(new Date());
     final String ROOT_URI_DATE = "http://anticovidaptech.herokuapp.com/patients?date=" + currentDate;
 
+    @Scheduled(cron = "0 15 20 * * ?", zone = "Asia/Ho_Chi_Minh")
     public List<PatientApi> getAllPatientApi() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI, PatientApiInfo.class);
@@ -76,6 +77,7 @@ public class PatientApiController {
                         patientLocation.setLocationId(location.getId());
                         patientLocation.setPatientId(patient.getId());
                         patientLocation.setNote(item.getNote());
+                        patientLocation.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
                         if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
                             patientLocation.setVerifyDate(item.getVerifyDate());
                         } else {
@@ -89,6 +91,7 @@ public class PatientApiController {
                             newPatientLocation.setPatientId(patient.getId());
                             newPatientLocation.setLocationId(location.getId());
                             newPatientLocation.setNote(item.getNote());
+                            newPatientLocation.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
                             if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
                                 newPatientLocation.setVerifyDate(item.getVerifyDate());
                             } else {
@@ -104,7 +107,7 @@ public class PatientApiController {
         return null;
     }
 
-    @Scheduled(cron = "0 0 20 * * ?", zone = "Asia/Ho_Chi_Minh")
+//    @Scheduled(cron = "0 0 20 * * ?", zone = "Asia/Ho_Chi_Minh")
     public List<PatientApi> getNewPatientApi() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PatientApiInfo> response = restTemplate.getForEntity(ROOT_URI_DATE, PatientApiInfo.class);
