@@ -43,14 +43,6 @@ public class User {
     @Column(name = "deleted_at")
     private java.sql.Timestamp deletedAt;
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -61,6 +53,14 @@ public class User {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setUserName(String userName) {
