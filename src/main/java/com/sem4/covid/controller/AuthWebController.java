@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
@@ -58,27 +61,43 @@ public class AuthWebController {
     //Login by admin account
     @CrossOrigin
     @PostMapping("api/loginweb")
-    ResponseEntity<?> loginAdmin(@RequestParam String email, @RequestParam String password, HttpSession session) {
-        if (email == null || email.isEmpty()){
+    ResponseEntity<?> loginAdmin(@RequestHeader(name = "accessToken",required = true) String token,@RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
+        if (token.isEmpty() || repository.checkToken(token) == null){
+            if (email == null || email.isEmpty()){
 
-            return new ResponseEntity<String>(
-                    String.format("Email không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-        if (password == null || password.isEmpty()){
+                return new ResponseEntity<String>(
+                        String.format("Email không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+            if (password == null || password.isEmpty()){
 
-            return new ResponseEntity<String>(
-                    String.format("Mật khẩu không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<String>(
+                        String.format("Mật khẩu không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+            User user = repository.findAccountAdmin(email);
+
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(password.getBytes());
+            byte[] digest = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            password = sb.toString();
+
+            if (user == null){
+                return new ResponseEntity<String>(
+                        String.format("Email hoặc mật khẩu không đúng."), HttpStatus.NOT_FOUND);
+            }
+            if (user.getPassword().equals(password)) {
+
+                return new ResponseEntity<User>(
+                        user, HttpStatus.OK);
+            }
         }
-        User user = repository.findAccountAdmin(email);
-        if (user == null){
-            return new ResponseEntity<String>(
-                    String.format("Email hoặc mật khẩu không đúng."), HttpStatus.NOT_FOUND);
-        }
-        if (user.getPassword().equals(password)) {
-            session.setAttribute("Username", user.getUserName());
+        if (repository.checkToken(token) != null){
 
             return new ResponseEntity<User>(
-                    user, HttpStatus.OK);
+                    repository.checkToken(token),HttpStatus.OK);
         }
 
         return null;
@@ -87,7 +106,8 @@ public class AuthWebController {
     //Logout
     @CrossOrigin
     @PostMapping("api/logout")
-    void logout(HttpSession session) {
+    void logout(HttpServletRequest httpRequest) {
+        HttpSession session = httpRequest.getSession();
         session.invalidate();
     }
 }
