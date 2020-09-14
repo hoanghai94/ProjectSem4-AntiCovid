@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
@@ -28,7 +30,7 @@ public class UserController {
     //Create User
     @CrossOrigin
     @PostMapping("/api/user")
-    ResponseEntity<?> createUser(@RequestBody User user){
+    ResponseEntity<?> createUser(@RequestBody User user) throws NoSuchAlgorithmException {
         Calendar cal = Calendar.getInstance();
         if (user.getEmail() == null || user.getEmail().isEmpty()){
 
@@ -56,8 +58,23 @@ public class UserController {
                     String.format("Số điện thoại đã tồn tại."), HttpStatus.BAD_REQUEST);
         }
         if (repository.checkEmailUnique(user.getEmail()).isEmpty() & repository.checkPhoneUnique(user.getPhone()).isEmpty()){
+//            String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+//            Boolean regexEmail = user.getEmail().matches(regex);
+//            if (regexEmail){
+//
+//            }
+
             user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
             user.setStatus(0);
+
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(user.getPassword().getBytes());
+            byte[] digest = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            user.setPassword(sb.toString());
             repository.save(user);
 
             return new ResponseEntity<User>(
