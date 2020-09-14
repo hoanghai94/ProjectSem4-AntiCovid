@@ -11,9 +11,15 @@ import java.util.List;
 @Repository
 public interface PatientLocationRepository extends JpaRepository<PatientLocation, Integer> {
 
-    @Query("SELECT p from PatientLocation p")
+    @Query("SELECT p from PatientLocation p where p.deletedAt IS NULL")
     List<PatientLocation> getAllPatientLocation();
 
-    @Query("SELECT p from PatientLocation p where p.patientId = :patientId and p.locationId = :locationId")
+    @Query("SELECT p from PatientLocation p where p.deletedAt IS NULL and p.patientId = :patientId and p.locationId = :locationId")
     PatientLocation findByPatientLocationId(@Param("patientId") Integer patientId, @Param("locationId") Integer locationId);
+
+    @Query("SELECT p from PatientLocation p where p.deletedAt IS NULL and p.patientId = :patientId")
+    List<PatientLocation> findByPatientId(@Param("patientId") Integer patientId);
+
+    @Query("SELECT p from PatientLocation p where p.deletedAt IS NULL and p.locationId = :locationId")
+    List<PatientLocation> findByLocationId(@Param("locationId") Integer locationId);
 }

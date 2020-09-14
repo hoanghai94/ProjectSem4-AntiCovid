@@ -76,6 +76,7 @@ public class PatientApiController {
                         patientLocation.setLocationId(location.getId());
                         patientLocation.setPatientId(patient.getId());
                         patientLocation.setNote(item.getNote());
+                        patientLocation.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
                         if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
                             patientLocation.setVerifyDate(item.getVerifyDate());
                         } else {
@@ -89,6 +90,7 @@ public class PatientApiController {
                             newPatientLocation.setPatientId(patient.getId());
                             newPatientLocation.setLocationId(location.getId());
                             newPatientLocation.setNote(item.getNote());
+                            newPatientLocation.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
                             if (item.getVerifyDate().after(Timestamp.valueOf("2019-10-01 18:55:00"))) {
                                 newPatientLocation.setVerifyDate(item.getVerifyDate());
                             } else {

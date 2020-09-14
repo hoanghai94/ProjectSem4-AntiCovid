@@ -40,24 +40,27 @@ public class PatientController {
             } else {
                 List<PatientDTO> list = listPatient.stream().map(patient ->{
                     PatientDTO p = new PatientDTO();
-
                     List<Location> locations = locationRepository.getLocationByPatientId(patient.getId());
+
                     List<LocationDTO> locationDTO = locations.stream().map(location -> {
                         PatientLocation patientLocation = patientLocationRepository.findByPatientLocationId(patient.getId(), location.getId());
+                        if (patientLocation != null) {
+                            LocationDTO l = new LocationDTO();
+                            l.setId(location.getId());
+                            l.setName(location.getName());
+                            l.setLat(location.getLat());
+                            l.setLng(location.getLng());
+                            l.setProvince(location.getProvince());
+                            l.setVerifyDate(patientLocation.getVerifyDate());
+                            l.setVerifyDatePatient(patient.getVerifyDatePatient());
+                            l.setCreatedAt(location.getCreatedAt());
+                            l.setUpdatedAt(location.getUpdatedAt());
+                            l.setDeletedAt(location.getDeletedAt());
 
-                        LocationDTO l = new LocationDTO();
-                        l.setId(location.getId());
-                        l.setName(location.getName());
-                        l.setLat(location.getLat());
-                        l.setLng(location.getLng());
-                        l.setProvince(location.getProvince());
-                        l.setVerifyDate(patientLocation.getVerifyDate());
-                        l.setVerifyDatePatient(patient.getVerifyDatePatient());
-                        l.setCreatedAt(location.getCreatedAt());
-                        l.setUpdatedAt(location.getUpdatedAt());
-                        l.setDeletedAt(location.getDeletedAt());
-
-                        return l;
+                            return l;
+                        } else {
+                            return null;
+                        }
                     }).collect(Collectors.toList());
 
                     p.setId(patient.getId());
@@ -160,10 +163,13 @@ public class PatientController {
     ResponseEntity<?> deletePatient(@PathVariable int id) {
         try {
             Calendar cal = Calendar.getInstance();
-            Patient patient = repository.findById(id).get();;
-            patient.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
-            repository.save(patient);
-
+            List<PatientLocation> patientLocations = patientLocationRepository.findByPatientId(id);
+            if (!patientLocations.isEmpty()) {
+                for (PatientLocation item : patientLocations) {
+                    item.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
+                    patientLocationRepository.save(item);
+                }
+            }
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
