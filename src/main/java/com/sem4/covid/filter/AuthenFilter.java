@@ -14,6 +14,8 @@ public class AuthenFilter implements Filter {
 
     private static final String LOGIN_APP_URI = "/api/loginapp";
 
+    private static final String LOGIN_WEB_URI = "/api/loginweb";
+
     private static final String PROTOCOL_API = "http://";
 
     private static final String LOGIN_FAIL_URI = "/api/fail";
@@ -21,6 +23,8 @@ public class AuthenFilter implements Filter {
     private static final String REGISTER_WEB_URI = "/api/registerweb";
 
     private static final String REGISTER_APP_URI = "/api/user";
+
+    private static final String GET_USER_URI = "/api/users";
 
     public AuthenFilter(UserRepository repository) {
         this.repository = repository;
@@ -38,23 +42,20 @@ public class AuthenFilter implements Filter {
         String serverName = httpRequest.getServerName();
         int serverPort = httpRequest.getServerPort();
 
-        String LOGINFAIL_REQUEST = PROTOCOL_API + serverName + ":" + serverPort + LOGIN_FAIL_URI;
+        String LOGIN_FAIL_REQUEST = PROTOCOL_API + serverName + ":" + serverPort + LOGIN_FAIL_URI;
 
         String URI = httpRequest.getRequestURI();
-        if (URI.contains(REGISTER_WEB_URI) || URI.contains(REGISTER_APP_URI)){
+        if (URI.contains(REGISTER_WEB_URI) || URI.contains(REGISTER_APP_URI) || URI.contains(LOGIN_APP_URI) || URI.contains(LOGIN_WEB_URI) || URI.contains(GET_USER_URI)){
             filterChain.doFilter(servletRequest, servletResponse);
         }
         if (URI.contains(LOGIN_FAIL_URI)){
-            filterChain.doFilter(servletRequest, servletResponse);
-        }
-        if (URI.contains(LOGIN_APP_URI)){
             filterChain.doFilter(servletRequest, servletResponse);
         }
         else{
             String header = httpRequest.getHeader("accessToken");
 
             if (header == null || repository.checkToken(header) == null){
-                httpResponse.sendRedirect(LOGINFAIL_REQUEST);
+                httpResponse.sendRedirect(LOGIN_FAIL_REQUEST);
 
             }else {
                 filterChain.doFilter(servletRequest, servletResponse);

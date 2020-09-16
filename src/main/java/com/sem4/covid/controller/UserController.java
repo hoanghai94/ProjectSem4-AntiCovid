@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -23,8 +24,20 @@ public class UserController {
     //Get All Users
     @CrossOrigin
     @GetMapping("/api/users")
-    List<User> getAllUsers() {
-        return repository.getAllUserActive();
+    ResponseEntity<?> getAllUsers(HttpServletRequest httpRequest) {
+        String header = httpRequest.getHeader("accessToken");
+        if (header == null || header.isEmpty()){
+            return new ResponseEntity<String>(
+                    String.format("Yêu cầu đăng nhập."), HttpStatus.NOT_FOUND);
+        }
+        if (repository.checkToken(header).getStatus() == 2){
+            List<User> userList = repository.getAllUserActive();
+            return new ResponseEntity<List>(
+                    userList, HttpStatus.OK);
+        }
+        return new ResponseEntity<String>(
+                String.format("Yêu cầu đăng nhập."), HttpStatus.NOT_FOUND);
+
     }
 
     //Create User
