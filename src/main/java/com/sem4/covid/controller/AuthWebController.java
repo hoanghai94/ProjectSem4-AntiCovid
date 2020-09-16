@@ -24,7 +24,7 @@ public class AuthWebController {
     //Create admin account
     @CrossOrigin
     @PostMapping("api/registerweb")
-    ResponseEntity<?> createAdmin(@RequestBody User user){
+    ResponseEntity<?> createAdmin(@RequestBody User user) throws NoSuchAlgorithmException {
         Calendar cal = Calendar.getInstance();
         if (user.getEmail() == null || user.getEmail().isEmpty()){
 
@@ -49,6 +49,14 @@ public class AuthWebController {
         if (repository.checkEmailUnique(user.getEmail()).isEmpty() & repository.checkPhoneUnique(user.getPhone()).isEmpty()){
             user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
             user.setStatus(2);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(user.getPassword().getBytes());
+            byte[] digest = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            user.setPassword(sb.toString());
             repository.save(user);
 
             return new ResponseEntity<User>(
@@ -90,6 +98,14 @@ public class AuthWebController {
             }
             if (user.getPassword().equals(password)) {
 
+                String salt = java.time.LocalDateTime.now().toString();
+                md.update(salt.getBytes());
+                for (byte b : digest) {
+                    sb.append(String.format("%02x", b & 0xff));
+                }
+
+                token = sb.toString();
+                user.setToken(token);
                 return new ResponseEntity<User>(
                         user, HttpStatus.OK);
             }
