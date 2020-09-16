@@ -8,6 +8,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -26,13 +29,20 @@ public class UserController {
     //Get All Users
     @CrossOrigin
     @GetMapping("/api/users")
-    ResponseEntity<?> getAllUsers() {
+    ResponseEntity<?> getAllUsers(HttpServletRequest httpRequest) {
         try {
-            List<User> userList = repository.getAllUserActive();
-            if (userList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            String header = httpRequest.getHeader("accessToken");
+            if (header == null || header.isEmpty()){
+                return new ResponseEntity<String>(
+                        String.format("Yêu cầu đăng nhập."), HttpStatus.NOT_FOUND);
+            }
+
+            if (repository.checkToken(header).getStatus() == 2){
+                List<User> userList = repository.getAllUserActive();
+                return new ResponseEntity<List>(userList, HttpStatus.OK);
             } else {
-                return new ResponseEntity(userList, HttpStatus.OK);
+                return new ResponseEntity<String>(
+                        String.format("Lỗi quyền truy cập."), HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,7 +53,7 @@ public class UserController {
     //Create User
     @CrossOrigin
     @PostMapping("/api/user")
-    ResponseEntity<?> createUser(@Valid @RequestBody User user){
+    ResponseEntity<?> createUser(@Valid @RequestBody User user) throws NoSuchAlgorithmException {
         try {
             if (repository.checkEmailUnique(user.getEmail()).size() > 0){
                 return new ResponseEntity<String>(
@@ -53,6 +63,15 @@ public class UserController {
             Calendar cal = Calendar.getInstance();
             user.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
             user.setStatus(0);
+
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(user.getPassword().getBytes());
+            byte[] digest = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            user.setPassword(sb.toString());
             repository.save(user);
 
             return new ResponseEntity<User>(user, HttpStatus.OK);
