@@ -3,6 +3,8 @@ package com.sem4.covid.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,12 +20,15 @@ public class Location {
     private Integer id;
 
     @Column(name = "name")
+    @NotBlank(message = "tên địa điểm không để trống.")
     private String name;
 
     @Column(name = "lat")
+    @Positive(message = "vĩ độ không để trống.")
     private float lat;
 
     @Column(name = "lng")
+    @Positive(message = "kinh độ không để trống.")
     private float lng;
 
     @Column(name = "province")

@@ -106,6 +106,7 @@ public class AuthWebController {
 
                 token = sb.toString();
                 user.setToken(token);
+                repository.save(user);
                 return new ResponseEntity<User>(
                         user, HttpStatus.OK);
             }
