@@ -1,6 +1,7 @@
 package com.sem4.covid.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ public class Patient {
     private Integer id;
 
     @Column(name = "patient_name")
+    @NotBlank(message = "tên bệnh nhân không để trống.")
     private String patientName;
 
     @Column(name = "note_patient")

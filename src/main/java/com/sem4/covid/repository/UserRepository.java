@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query("SELECT u from User u where u.deletedAt IS NULL and u.id = :id")
     User findIdActive(@Param("id") int id);
 
-    @Query("SELECT u from User u where u.deletedAt IS NULL")
+    @Query("SELECT u from User u where u.deletedAt IS NULL order by u.id desc")
     List<User> getAllUserActive();
 
     @Query("SELECT u from User u where u.deletedAt IS NULL and u.email = :email and u.status = 2")

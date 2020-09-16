@@ -10,8 +10,11 @@ import com.sem4.covid.repository.PatientLocationRepository;
 import com.sem4.covid.repository.PatientRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,13 +122,18 @@ public class PatientController {
     //Create Patient
     @CrossOrigin
     @PostMapping("/api/patient")
-    ResponseEntity<?> createPatient(@RequestBody Patient patient){
+    ResponseEntity<?> createPatient(@Valid @RequestBody Patient patient){
         try {
+            if (repository.findByName(patient.getPatientName()) != null){
+                return new ResponseEntity<String>(
+                        String.format("tên bệnh nhân đã tồn tại."), HttpStatus.BAD_REQUEST);
+            }
+
             Calendar cal = Calendar.getInstance();
             patient.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
             repository.save(patient);
 
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<Patient>(patient, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -135,7 +143,7 @@ public class PatientController {
     //Update Patient
     @CrossOrigin
     @PutMapping("/api/patient/{id}")
-    ResponseEntity<?> updatePatient(@RequestBody Patient newPatient, @PathVariable int id) {
+    ResponseEntity<?> updatePatient(@Valid @RequestBody Patient newPatient, @PathVariable int id) {
         try {
             Calendar cal = Calendar.getInstance();
 
@@ -150,7 +158,7 @@ public class PatientController {
             patient.setUpdatedAt(new Timestamp(cal.getTimeInMillis()));
             repository.save(patient);
 
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<Patient>(patient, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -188,5 +196,18 @@ public class PatientController {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

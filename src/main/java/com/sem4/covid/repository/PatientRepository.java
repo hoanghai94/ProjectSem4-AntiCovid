@@ -14,7 +14,7 @@ public interface PatientRepository extends JpaRepository<Patient,Integer> {
     @Query("SELECT p from Patient p where p.deletedAt IS NULL and p.id = :id")
     Patient findIdActive(@Param("id") int id);
 
-    @Query("SELECT p from Patient p where p.patientName = :name")
+    @Query("SELECT p from Patient p where p.deletedAt IS NULL and p.patientName = :name")
     Patient findByName(@Param("name") String name);
 
     @Query("SELECT p from Patient p where p.deletedAt IS NULL")
