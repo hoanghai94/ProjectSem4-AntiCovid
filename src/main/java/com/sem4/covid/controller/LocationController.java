@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class LocationController {
     private final LocationRepository repository;
@@ -35,7 +36,6 @@ public class LocationController {
     }
 
     //Get All Location With Patient
-    @CrossOrigin
     @GetMapping("/api/locations")
     public ResponseEntity<?> getAllLocations() {
         try {
@@ -91,7 +91,6 @@ public class LocationController {
     }
 
     //Get Location By Id
-    @CrossOrigin
     @GetMapping("/api/location/{id}")
     ResponseEntity<?> getLocationById(@PathVariable int id) {
         try {
@@ -118,7 +117,6 @@ public class LocationController {
     }
 
     //Create Location
-    @CrossOrigin
     @PostMapping("/api/location")
     ResponseEntity<?> createLocation(@Valid @RequestBody Location location){
         try {
@@ -134,7 +132,6 @@ public class LocationController {
     }
 
     //Update Location
-    @CrossOrigin
     @PutMapping("/api/location/{id}")
     ResponseEntity<?> updateLocation(@Valid @RequestBody Location newLocation, @PathVariable int id) {
         try {
@@ -155,7 +152,6 @@ public class LocationController {
     }
 
     //Delete Location
-    @CrossOrigin
     @DeleteMapping("/api/location/{id}")
     ResponseEntity<?> deleteLocation(@PathVariable int id) {
         try {

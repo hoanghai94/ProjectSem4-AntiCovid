@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class OAuthAppController {
     private final UserRepository repository;
@@ -18,9 +19,7 @@ public class OAuthAppController {
         this.repository = repository;
     }
 
-
     //Login by member account
-    @CrossOrigin
     @PostMapping("api/loginapp")
     ResponseEntity<?> loginMember(@RequestHeader(name = "accessToken",required = true) String token, @RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
         if (token.isEmpty() || repository.checkToken(token) == null){

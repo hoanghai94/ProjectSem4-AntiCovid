@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class AuthWebController {
     private final UserRepository repository;
@@ -22,7 +23,6 @@ public class AuthWebController {
     }
 
     //Create admin account
-    @CrossOrigin
     @PostMapping("api/registerweb")
     ResponseEntity<?> createAdmin(@RequestBody User user) throws NoSuchAlgorithmException {
         Calendar cal = Calendar.getInstance();
@@ -67,7 +67,6 @@ public class AuthWebController {
     }
 
     //Login by admin account
-    @CrossOrigin
     @PostMapping("api/loginweb")
     ResponseEntity<?> loginAdmin(@RequestHeader(name = "accessToken",required = true) String token,@RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
         if (token.isEmpty() || repository.checkToken(token) == null){
@@ -121,7 +120,6 @@ public class AuthWebController {
     }
 
     //Logout
-    @CrossOrigin
     @PostMapping("api/logout")
     void logout(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession();
