@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class UserController {
     private final UserRepository repository;
@@ -27,7 +28,6 @@ public class UserController {
     }
 
     //Get All Users
-    @CrossOrigin
     @GetMapping("/api/users")
     ResponseEntity<?> getAllUsers(HttpServletRequest httpRequest) {
         try {
@@ -51,7 +51,6 @@ public class UserController {
     }
 
     //Create User
-    @CrossOrigin
     @PostMapping("/api/user")
     ResponseEntity<?> createUser(@Valid @RequestBody User user) throws NoSuchAlgorithmException {
         try {
@@ -82,7 +81,6 @@ public class UserController {
     }
 
     //Get One User
-    @CrossOrigin
     @GetMapping("/api/user/{id}")
     ResponseEntity<?> getUserById(@PathVariable int id) {
         try {
@@ -99,7 +97,6 @@ public class UserController {
     }
 
     //Update User
-    @CrossOrigin
     @PutMapping("/api/user/{id}")
     ResponseEntity<?> updateUser(@Valid @RequestBody User newUser, @PathVariable int id) {
         try {
@@ -122,7 +119,6 @@ public class UserController {
     }
 
     //Delete User
-    @CrossOrigin
     @DeleteMapping("/api/user/{id}")
     ResponseEntity<?> deleteUser(@PathVariable int id) {
         try {

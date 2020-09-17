@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class PatientController {
     private final PatientRepository repository;
@@ -32,7 +33,6 @@ public class PatientController {
     }
 
     //Get All Patient With Location
-    @CrossOrigin
     @GetMapping("/api/patients")
     public ResponseEntity<?> getAllPatients() {
         try {
@@ -90,7 +90,6 @@ public class PatientController {
     }
 
     //Get One Patient
-    @CrossOrigin
     @GetMapping("/api/patient/{id}")
     ResponseEntity<?> getPatientById(@PathVariable int id) {
         try {
@@ -120,7 +119,6 @@ public class PatientController {
     }
 
     //Create Patient
-    @CrossOrigin
     @PostMapping("/api/patient")
     ResponseEntity<?> createPatient(@Valid @RequestBody Patient patient){
         try {
@@ -141,7 +139,6 @@ public class PatientController {
     }
 
     //Update Patient
-    @CrossOrigin
     @PutMapping("/api/patient/{id}")
     ResponseEntity<?> updatePatient(@Valid @RequestBody Patient newPatient, @PathVariable int id) {
         try {
@@ -166,7 +163,6 @@ public class PatientController {
     }
 
     //Delete Patient
-    @CrossOrigin
     @DeleteMapping("/api/patient/{id}")
     ResponseEntity<?> deletePatient(@PathVariable int id) {
         try {
@@ -186,7 +182,6 @@ public class PatientController {
     }
 
     //Get All Table Patient_Location
-    @CrossOrigin
     @GetMapping("/api/patient-location")
     ResponseEntity<?> getAllPatientLocation() {
         try {
