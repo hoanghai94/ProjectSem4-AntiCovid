@@ -189,4 +189,19 @@ public class PatientController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //Add patient to location
+    @CrossOrigin
+    @PostMapping("/api/patientlocation")
+    ResponseEntity<?> addPatientLocation(@RequestBody PatientLocation patientLocation) {
+        try {
+            patientLocationRepository.save(patientLocation);
+
+            return new ResponseEntity<PatientLocation>(
+                    patientLocation, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

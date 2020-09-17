@@ -132,4 +132,5 @@ public class UserController {
         user.setDeletedAt(new Timestamp(cal.getTimeInMillis()));
         repository.save(user);
     }
+
 }
