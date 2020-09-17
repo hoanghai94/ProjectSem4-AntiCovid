@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", maxAge = 18000)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 18000)
 @RestController
 public class PatientController {
     private final PatientRepository repository;
