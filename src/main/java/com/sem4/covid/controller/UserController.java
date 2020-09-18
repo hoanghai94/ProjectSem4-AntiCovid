@@ -53,7 +53,7 @@ public class UserController {
         try {
             if (repository.checkEmailUnique(user.getEmail()).size() > 0){
                 return new ResponseEntity<String>(
-                        String.format("email đã tồn tại."), HttpStatus.BAD_REQUEST);
+                        String.format("Email đã tồn tại."), HttpStatus.BAD_REQUEST);
             }
 
             Calendar cal = Calendar.getInstance();
@@ -137,7 +137,7 @@ public class UserController {
         try {
             ArrayList<Integer> list = new ArrayList<>();
 
-            for(int i=0; i < 7; i++){
+            for(int i=0; i < 10; i++){
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DATE,-i);
                 Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
