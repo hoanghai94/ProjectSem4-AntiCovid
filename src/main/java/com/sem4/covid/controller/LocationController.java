@@ -10,13 +10,19 @@ import com.sem4.covid.repository.PatientLocationRepository;
 import com.sem4.covid.repository.PatientRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class LocationController {
     private final LocationRepository repository;
@@ -30,7 +36,6 @@ public class LocationController {
     }
 
     //Get All Location With Patient
-    @CrossOrigin
     @GetMapping("/api/locations")
     public ResponseEntity<?> getAllLocations() {
         try {
@@ -86,7 +91,6 @@ public class LocationController {
     }
 
     //Get Location By Id
-    @CrossOrigin
     @GetMapping("/api/location/{id}")
     ResponseEntity<?> getLocationById(@PathVariable int id) {
         try {
@@ -113,9 +117,8 @@ public class LocationController {
     }
 
     //Create Location
-    @CrossOrigin
     @PostMapping("/api/location")
-    ResponseEntity<?> createLocation(@RequestBody Location location){
+    ResponseEntity<?> createLocation(@Valid @RequestBody Location location){
         try {
             Calendar cal = Calendar.getInstance();
             location.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
@@ -129,9 +132,8 @@ public class LocationController {
     }
 
     //Update Location
-    @CrossOrigin
     @PutMapping("/api/location/{id}")
-    ResponseEntity<?> updateLocation(@RequestBody Location newLocation, @PathVariable int id) {
+    ResponseEntity<?> updateLocation(@Valid @RequestBody Location newLocation, @PathVariable int id) {
         try {
             Calendar cal = Calendar.getInstance();
             Location location = repository.findByIdActive(id);
@@ -150,7 +152,6 @@ public class LocationController {
     }
 
     //Delete Location
-    @CrossOrigin
     @DeleteMapping("/api/location/{id}")
     ResponseEntity<?> deleteLocation(@PathVariable int id) {
         try {
@@ -167,5 +168,18 @@ public class LocationController {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

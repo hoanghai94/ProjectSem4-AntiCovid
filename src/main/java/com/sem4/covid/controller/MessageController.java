@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class MessageController {
 
-    @CrossOrigin
     @GetMapping("api/fail")
     ResponseEntity<?> getFailedMessage(HttpSession session) {
         return new ResponseEntity<String>(

@@ -2,6 +2,9 @@ package com.sem4.covid.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "user")
@@ -14,21 +17,27 @@ public class User {
     private Integer id;
 
     @Column(name = "user_name")
+    @NotBlank(message = "tên người dùng không để trống.")
     private String userName;
 
     @Column(name = "phone")
+    @NotBlank(message = "số điện thoại không để trống.")
+    @Pattern(regexp = "(^09|0[3|5|7|8])+([0-9]{8})$", message = "số điện thoại không hợp lệ.")
     private String phone;
 
     @Column(name = "address")
     private String address;
 
     @Column(name = "email")
+    @NotBlank(message = "email không để trống.")
+    @Email(message = "email không hợp lệ.")
     private String email;
 
     @Column(name = "status")
     private Integer status;
 
     @Column(name = "password")
+    @NotBlank(message = "mật khẩu không để trống.")
     private String password;
 
     @Column(name = "token")
