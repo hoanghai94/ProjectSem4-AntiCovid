@@ -19,17 +19,17 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 18000)
+@CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
 public class PatientController {
     private final PatientRepository repository;
     private final LocationRepository locationRepository;
     private final PatientLocationRepository patientLocationRepository;
 
-    public PatientController(PatientRepository repository, LocationRepository locationRepository, PatientLocationRepository patientLocationRepository, PatientLocationRepository patientLocationRepository1) {
+    public PatientController(PatientRepository repository, LocationRepository locationRepository, PatientLocationRepository patientLocationRepository) {
         this.repository = repository;
         this.locationRepository = locationRepository;
-        this.patientLocationRepository = patientLocationRepository1;
+        this.patientLocationRepository = patientLocationRepository;
     }
 
     //Get All Patient With Location
