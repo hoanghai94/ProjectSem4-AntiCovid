@@ -8,7 +8,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.validation.Valid;
@@ -29,21 +28,10 @@ public class UserController {
 
     //Get All Users
     @GetMapping("/api/users")
-    ResponseEntity<?> getAllUsers(HttpServletRequest httpRequest) {
+    ResponseEntity<?> getAllUsers() {
         try {
-            String header = httpRequest.getHeader("accessToken");
-            if (header == null || header.isEmpty()){
-                return new ResponseEntity<String>(
-                        String.format("Yêu cầu đăng nhập."), HttpStatus.NOT_FOUND);
-            }
-
-            if (repository.checkToken(header).getStatus() == 2){
-                List<User> userList = repository.getAllUserActive();
-                return new ResponseEntity<List>(userList, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<String>(
-                        String.format("Lỗi quyền truy cập."), HttpStatus.UNAUTHORIZED);
-            }
+            List<User> userList = repository.getAllUserActive();
+            return new ResponseEntity<List>(userList, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -52,7 +40,7 @@ public class UserController {
 
     //Create User
     @PostMapping("/api/user")
-    ResponseEntity<?> createUser(@Valid @RequestBody User user) throws NoSuchAlgorithmException {
+    ResponseEntity<?> createUser(@Valid @RequestBody User user) {
         try {
             if (repository.checkEmailUnique(user.getEmail()).size() > 0){
                 return new ResponseEntity<String>(

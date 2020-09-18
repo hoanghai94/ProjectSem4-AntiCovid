@@ -21,60 +21,43 @@ public class OAuthAppController {
 
     //Login by member account
     @PostMapping("api/loginapp")
-    ResponseEntity<?> loginMember(@RequestHeader(name = "accessToken",required = true) String token, @RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
-        if (token.isEmpty() || repository.checkToken(token) == null){
+    ResponseEntity<?> loginMember(@RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
+        if (email == null || email.isEmpty()){
+            return new ResponseEntity<String>(
+                    String.format("Email không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        if (password == null || password.isEmpty()){
+            return new ResponseEntity<String>(
+                    String.format("Mật khẩu không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
+        User user = repository.findAccountMember(email);
 
-            if (email == null || email.isEmpty()){
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(password.getBytes());
+        byte[] digest = md.digest();
+        StringBuffer sb = new StringBuffer();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        password = sb.toString();
 
-                return new ResponseEntity<String>(
-                        String.format("Email không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
-            }
-            if (password == null || password.isEmpty()){
-
-                return new ResponseEntity<String>(
-                        String.format("Mật khẩu không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
-            }
-
-            User user = repository.findAccountMember(email);
-
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            byte[] digest = md.digest();
-            StringBuffer sb = new StringBuffer();
+        if (user == null || !user.getPassword().equals(password)){
+            return new ResponseEntity<String>(
+                    String.format("Email hoặc mật khẩu không đúng."), HttpStatus.NOT_FOUND);
+        }
+        if (user.getPassword().equals(password)) {
+            session.setAttribute("Username", user.getUserName());
+            String salt = java.time.LocalDateTime.now().toString();
+            md.update(salt.getBytes());
             for (byte b : digest) {
                 sb.append(String.format("%02x", b & 0xff));
             }
-            password = sb.toString();
 
-
-            if (user == null || !user.getPassword().equals(password)){
-                return new ResponseEntity<String>(
-                        String.format("Email hoặc mật khẩu không đúng."), HttpStatus.NOT_FOUND);
-            }
-            if (user.getPassword().equals(password)) {
-                session.setAttribute("Username", user.getUserName());
-                String salt = java.time.LocalDateTime.now().toString();
-                md.update(salt.getBytes());
-                for (byte b : digest) {
-                    sb.append(String.format("%02x", b & 0xff));
-                }
-
-                token = sb.toString();
-                user.setToken(token);
-                repository.save(user);
-
-                return new ResponseEntity<User>(
-                        user, HttpStatus.OK);
-            }
-        }
-        if (repository.checkToken(token) != null){
-
-            return new ResponseEntity<User>(
-                    repository.checkToken(token),HttpStatus.OK);
+            return new ResponseEntity<User>(user, HttpStatus.OK);
         }
 
-        return null;
+        return new ResponseEntity<String>(
+                String.format("Email hoặc mật khẩu không đúng."), HttpStatus.NOT_FOUND);
     }
-
 }
