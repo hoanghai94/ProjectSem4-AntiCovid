@@ -26,10 +26,10 @@ public class PatientController {
     private final LocationRepository locationRepository;
     private final PatientLocationRepository patientLocationRepository;
 
-    public PatientController(PatientRepository repository, LocationRepository locationRepository, PatientLocationRepository patientLocationRepository, PatientLocationRepository patientLocationRepository1) {
+    public PatientController(PatientRepository repository, LocationRepository locationRepository, PatientLocationRepository patientLocationRepository) {
         this.repository = repository;
         this.locationRepository = locationRepository;
-        this.patientLocationRepository = patientLocationRepository1;
+        this.patientLocationRepository = patientLocationRepository;
     }
 
     //Get All Patient With Location
