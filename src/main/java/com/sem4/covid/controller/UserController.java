@@ -13,10 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.validation.Valid;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
@@ -128,6 +125,36 @@ public class UserController {
             repository.save(user);
 
             return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Get chart data user
+    @GetMapping("/api/userchart")
+    ResponseEntity<?> getChartDataUser(){
+        try {
+            ArrayList<Integer> list = new ArrayList<>();
+
+            for(int i=0; i < 7; i++){
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE,-i);
+                Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
+                cal.setTimeInMillis(timestamp.getTime());
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+
+                Timestamp startTime = new Timestamp(cal.getTimeInMillis());
+                Timestamp endTime = new Timestamp(cal.getTimeInMillis() + 86399999);
+                List<User> userList = repository.userChart(startTime,endTime);
+                list.add(userList.size());
+            }
+
+
+            return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

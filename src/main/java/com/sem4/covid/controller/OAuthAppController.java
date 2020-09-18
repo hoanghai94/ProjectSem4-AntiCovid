@@ -4,11 +4,15 @@ import com.sem4.covid.entity.User;
 import com.sem4.covid.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 18000)
 @RestController
@@ -23,18 +27,6 @@ public class OAuthAppController {
     @PostMapping("api/loginapp")
     ResponseEntity<?> loginMember(@RequestHeader(name = "accessToken",required = true) String token, @RequestParam String email, @RequestParam String password, HttpSession session) throws NoSuchAlgorithmException {
         if (token.isEmpty() || repository.checkToken(token) == null){
-
-
-            if (email == null || email.isEmpty()){
-
-                return new ResponseEntity<String>(
-                        String.format("Email không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
-            }
-            if (password == null || password.isEmpty()){
-
-                return new ResponseEntity<String>(
-                        String.format("Mật khẩu không được để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
-            }
 
             User user = repository.findAccountMember(email);
 
@@ -77,4 +69,16 @@ public class OAuthAppController {
         return null;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
 }
