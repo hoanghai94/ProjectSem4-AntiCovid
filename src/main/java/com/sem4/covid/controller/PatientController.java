@@ -206,6 +206,68 @@ public class PatientController {
         }
     }
 
+    //Get new patient
+    @GetMapping("/api/new-patient")
+    ResponseEntity<?> getNewPatient() {
+        try {
+            Calendar cal = Calendar.getInstance();
+            Calendar calEnd = Calendar.getInstance();
+            cal.add(Calendar.DATE,-7);
+            Timestamp startTime = new Timestamp(cal.getTimeInMillis());
+            Timestamp endTime = new Timestamp(calEnd.getTimeInMillis());
+
+            List<Patient> listNewPatient = repository.getNewPatient(startTime, endTime);
+
+            if (listNewPatient.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                List<PatientDTO> list = listNewPatient.stream().map(patient ->{
+                    PatientDTO p = new PatientDTO();
+                    List<Location> locations = locationRepository.getLocationByPatientId(patient.getId());
+                    List<LocationDTO> locationDTO = locations.stream().map(location -> {
+                        PatientLocation patientLocation = patientLocationRepository.findByPatientLocationId(patient.getId(), location.getId());
+                        if (patientLocation != null) {
+                            LocationDTO l = new LocationDTO();
+                            l.setId(location.getId());
+                            l.setName(location.getName());
+                            l.setLat(location.getLat());
+                            l.setLng(location.getLng());
+                            l.setProvince(location.getProvince());
+                            l.setVerifyDate(patientLocation.getVerifyDate());
+                            l.setVerifyDatePatient(patient.getVerifyDatePatient());
+                            l.setCreatedAt(location.getCreatedAt());
+                            l.setUpdatedAt(location.getUpdatedAt());
+                            l.setDeletedAt(location.getDeletedAt());
+
+                            return l;
+                        } else {
+                            return null;
+                        }
+                    }).collect(Collectors.toList());
+
+                    p.setId(patient.getId());
+                    p.setPatientName(patient.getPatientName());
+                    p.setNotePatient(patient.getNotePatient());
+                    p.setAge(patient.getAge());
+                    p.setGender(patient.getGender());
+                    p.setStatus(patient.getStatus());
+                    p.setProvince(patient.getProvince());
+                    p.setVerifyDate(patient.getVerifyDatePatient());
+                    p.setCreatedAt(patient.getCreatedAt());
+                    p.setUpdatedAt(patient.getUpdatedAt());
+                    p.setDeletedAt(patient.getDeletedAt());
+                    p.setLocation(locationDTO);
+
+                    return p;
+                }).collect(Collectors.toList());
+                return ResponseEntity.ok(list);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
