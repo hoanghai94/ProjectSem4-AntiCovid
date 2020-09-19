@@ -193,6 +193,19 @@ public class PatientController {
         }
     }
 
+    //Add patient to location
+    @PostMapping("/api/patient-location")
+    ResponseEntity<?> addPatientLocation(@Valid @RequestBody PatientLocation patientLocation) {
+        try {
+            patientLocationRepository.save(patientLocation);
+            return new ResponseEntity<PatientLocation>(
+                    patientLocation, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
