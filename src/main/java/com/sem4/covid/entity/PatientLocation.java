@@ -3,6 +3,7 @@ package com.sem4.covid.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
@@ -18,6 +19,7 @@ public class PatientLocation {
     @Column(name = "location_id")
     private Integer locationId;
 
+    @NotNull(message = "bệnh nhân chưa được chọn.")
     @Column(name = "patient_id")
     private Integer patientId;
 

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -31,4 +32,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     @Query("SELECT u from User u where u.deletedAt IS NULL and u.token = :token")
     User checkToken(@Param("token") String token);
+
+    @Query("SELECT u from User u where u.deletedAt IS NULL and u.createdAt BETWEEN :startTime AND :endTime")
+    List<User> userChart(@Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
 }
