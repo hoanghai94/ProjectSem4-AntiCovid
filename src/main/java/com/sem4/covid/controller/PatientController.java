@@ -197,9 +197,17 @@ public class PatientController {
     @PostMapping("/api/patient-location")
     ResponseEntity<?> addPatientLocation(@Valid @RequestBody PatientLocation patientLocation) {
         try {
-            patientLocationRepository.save(patientLocation);
-            return new ResponseEntity<PatientLocation>(
-                    patientLocation, HttpStatus.OK);
+            PatientLocation checkUnique = patientLocationRepository.findByPatientLocationId(patientLocation.getPatientId(), patientLocation.getLocationId());
+            if (checkUnique != null) {
+                return new ResponseEntity<String>(
+                        String.format("bệnh nhân đã được thêm vào địa điểm."), HttpStatus.BAD_REQUEST);
+            } else {
+                Calendar cal = Calendar.getInstance();
+                patientLocation.setCreatedAt(new Timestamp(cal.getTimeInMillis()));
+                patientLocationRepository.save(patientLocation);
+                return new ResponseEntity<PatientLocation>(
+                        patientLocation, HttpStatus.OK);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
