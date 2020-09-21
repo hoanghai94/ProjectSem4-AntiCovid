@@ -6,10 +6,9 @@ import org.springframework.stereotype.Component;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@Component
+//@Component
 public class AuthenFilter implements Filter {
     private final UserRepository repository;
 
@@ -53,10 +52,9 @@ public class AuthenFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         }
         else{
-            HttpSession session = httpRequest.getSession();
-            String token = (String) session.getAttribute("accessToken");
+            String header = httpRequest.getHeader("accessToken");
 
-            if (token == null || repository.checkToken(token) == null){
+            if (header == null || repository.checkToken(header) == null){
                 httpResponse.sendRedirect(LOGIN_FAIL_REQUEST);
 
             }else {
