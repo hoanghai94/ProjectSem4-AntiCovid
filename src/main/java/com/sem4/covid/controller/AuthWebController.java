@@ -57,7 +57,7 @@ public class AuthWebController {
 
     //Login by admin account
     @PostMapping("api/loginweb")
-    ResponseEntity<?> loginAdmin(@Valid @RequestParam String email, @RequestParam String password,HttpServletRequest httpRequest) throws NoSuchAlgorithmException {
+    ResponseEntity<?> loginAdmin(@Valid @RequestParam String email, @RequestParam String password) throws NoSuchAlgorithmException {
         if (email == null || email.isEmpty()) {
             return new ResponseEntity<String>(
                     String.format("Email không để trống."), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -87,12 +87,7 @@ public class AuthWebController {
             for (byte b : digest) {
                 sb.append(String.format("%02x", b & 0xff));
             }
-            String token = sb.toString();
-            user.setToken(token);
-            repository.save(user);
 
-            HttpSession session = httpRequest.getSession();
-            session.setAttribute("accessToken",token);
             return new ResponseEntity<User>(user, HttpStatus.OK);
         }
 
